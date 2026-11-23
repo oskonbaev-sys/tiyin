@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="settings"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:shortcutShortLabel="@string/settings_shortcut">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.fr8masters.tiyin"
+            android:targetClass="com.fr8masters.tiyin.SettingsActivity" />
+    </shortcut>
+</shortcuts>

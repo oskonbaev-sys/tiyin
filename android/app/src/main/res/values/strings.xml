@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Tiyin</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_shortcut">Настройки</string>
+    <string name="auto_title">Автозапись трат</string>
+    <string name="st_not_linked">Не подключено. Нажмите в боте «Подключить автозапись».</string>
+    <string name="st_no_access">Почти готово: включите Tiyin в доступе к уведомлениям.</string>
+    <string name="st_ok">✅ Автозапись работает. Пуши банков записываются сами.</string>
+    <string name="open_bot">Открыть бота</string>
+    <string name="open_access">Включить доступ к уведомлениям</string>
+    <string name="restricted_hint">Если переключатель серый: «О приложении» → ⋮ (вверху справа) → «Разрешить ограниченные настройки», затем снова включите доступ.</string>
+    <string name="open_app_info">Открыть «О приложении»</string>
+    <string name="sw_enabled">Записывать траты из пушей</string>
+    <string name="toggle_hint">Включите переключатель Tiyin</string>
+    <string name="link_failed">Ссылка устарела. Нажмите кнопку в боте ещё раз.</string>
+    <string name="listener_label">Tiyin — автозапись трат</string>
+</resources>
