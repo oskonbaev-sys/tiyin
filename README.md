@@ -4,7 +4,7 @@
 
 - `android/` — приложение (WebView мини-приложения + автозапись из уведомлений). APK собирается GitHub Actions → Releases → `latest/Tiyin.apk`.
 - `server/` — модули для бота: `/start` с определением iOS/Android; на Android автозапись через MacroDroid (бот присылает готовый файл макроса), приём пушей `/api/ingest/android/<ключ>`.
-- `server/tiyin_android.macro` — шаблон макроса (экспорт из MacroDroid, ключ заменён на `TIYIN_KEY`). Пока его нет, бот присылает инструкцию для ручной настройки.
+- `server/tiyin_android.macro` — шаблон макроса MacroDroid (вместо ключа `TIYIN_KEY`); бот подставляет ключ и присылает `Tiyin.macro`. Собран по образцу настоящих экспортов MacroDroid, импорт на телефоне ещё не проверен.
 
 ## Подключение на сервере
 1. Скопировать `server/platform_start.py`, `server/android_ingest.py` к боту.

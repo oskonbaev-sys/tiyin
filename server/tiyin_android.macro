@@ -1,0 +1,92 @@
+{
+ "disabledTimestamp": 0,
+ "exportedActionBlocks": [],
+ "forceEvenIfNotEnabledTimestamp": 0,
+ "isActionBlock": false,
+ "isBeingImported": false,
+ "isClonedInstance": false,
+ "isExtra": false,
+ "isFavourite": false,
+ "lastEditedTimestamp": 1795472387777,
+ "localVariables": [],
+ "m_GUID": -3286017042968508560,
+ "m_category": "Tiyin",
+ "m_constraintList": [],
+ "m_description": "Автозапись трат в Tiyin: пуши банков с суммой отправляются в бот @tiyinplus_bot.",
+ "m_descriptionOpen": false,
+ "m_enabled": true,
+ "m_excludeLog": false,
+ "m_headingColor": 0,
+ "m_isOrCondition": false,
+ "m_name": "Tiyin — автозапись трат",
+ "m_triggerList": [
+  {
+   "enableRegex": true,
+   "m_applicationNameList": [
+    "Telegram",
+    "Telegram",
+    "WhatsApp",
+    "WhatsApp Business",
+    "Instagram",
+    "Gmail",
+    "MacroDroid",
+    "System UI"
+   ],
+   "m_exactMatch": false,
+   "m_excludeApps": true,
+   "m_excludes": false,
+   "m_ignoreOngoing": true,
+   "m_option": 0,
+   "m_packageNameList": [
+    "org.telegram.messenger",
+    "org.telegram.messenger.web",
+    "com.whatsapp",
+    "com.whatsapp.w4b",
+    "com.instagram.android",
+    "com.google.android.gm",
+    "com.arlosoft.macrodroid",
+    "com.android.systemui"
+   ],
+   "m_soundOption": 0,
+   "m_supressMultiples": true,
+   "m_textContent": "(?is).*\\d\\s?(kgs|сом|som|с)(\\s|[.,!)]|$).*",
+   "m_SIGUID": -2612973382715479671,
+   "m_classType": "NotificationTrigger",
+   "m_constraintList": [],
+   "m_isDisabled": false,
+   "m_isOrCondition": false
+  }
+ ],
+ "m_actionList": [
+  {
+   "requestConfig": {
+    "allowAnyCertificate": false,
+    "basicAuthEnabled": false,
+    "basicAuthPassword": "",
+    "basicAuthUsername": "",
+    "blockNextAction": false,
+    "contentBodyFileDisplayName": "",
+    "contentBodyFileUri": "",
+    "contentBodySource": 0,
+    "contentBodyText": "{\"app\":\"[not_app_name]\",\"title\":\"[not_title]\",\"text\":\"[notification]\"}",
+    "contentType": "application/json",
+    "followRedirects": false,
+    "headerParams": [],
+    "queryParams": [],
+    "requestTimeOutSeconds": 15,
+    "requestType": 1,
+    "saveResponseFileName": "",
+    "saveResponseFolderPathDisplayName": "",
+    "saveResponseFolderPathUri": "",
+    "saveResponseType": 0,
+    "saveReturnCodeToVariable": false,
+    "urlToOpen": "https://tiyin.fr8mastersllc.com/api/ingest/android/TIYIN_KEY"
+   },
+   "m_SIGUID": -18995341068532523,
+   "m_classType": "HttpRequestAction",
+   "m_constraintList": [],
+   "m_isDisabled": false,
+   "m_isOrCondition": false
+  }
+ ]
+}
