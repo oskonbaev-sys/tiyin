@@ -14,7 +14,9 @@ Telegram не сообщает боту платформу в обычном с�
 """
 from aiogram import F, Router
 
-from android_ingest import create_link_token
+from pathlib import Path
+
+from aiogram.types import BufferedInputFile
 from aiogram.filters import CommandStart
 from aiogram.types import (
     CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup,
@@ -23,7 +25,14 @@ from aiogram.types import (
 
 BASE = "https://tiyin.fr8mastersllc.com"
 DETECT_URL = f"{BASE}/detect.html"
-ANDROID_PAGE = f"{BASE}/android.html"
+MACRODROID_URL = "https://play.google.com/store/apps/details?id=com.arlosoft.macrodroid"
+# Шаблон макроса, экспортированный из MacroDroid; вместо ключа в нём стоит TIYIN_KEY
+MACRO_TEMPLATE = Path(__file__).with_name("tiyin_android.macro")
+
+
+def get_ingest_key(user_id: int) -> str:
+    """ЗАМЕНИТЬ: ключ автозаписи пользователя из вашей БД (тот же, что для iPhone)."""
+    raise NotImplementedError
 
 router = Router(name="platform_start")
 
@@ -52,12 +61,11 @@ def ios_kb() -> InlineKeyboardMarkup:
     ])
 
 
-def android_kb(user_id: int) -> InlineKeyboardMarkup:
-    # токен в #фрагменте: не попадает в логи сервера, одноразовый, живёт 15 минут
-    link = f"{ANDROID_PAGE}#t={create_link_token(user_id)}"
+def android_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [_app_button()],
-        [InlineKeyboardButton(text="📲 Подключить автозапись", url=link)],
+        [InlineKeyboardButton(text="1️⃣ Установить MacroDroid", url=MACRODROID_URL)],
+        [InlineKeyboardButton(text="2️⃣ Получить макрос Tiyin", callback_data="setup:android")],
         [InlineKeyboardButton(text="У меня iPhone", callback_data="platform:ios")],
     ])
 
@@ -75,9 +83,32 @@ IOS_TEXT = ("Автозапись трат (iPhone)\n"
             "«Apple Pay» записывает оплаты из Wallet, «Банки» — пуши банков.")
 
 ANDROID_TEXT = ("Автозапись трат (Android)\n"
-                "1. Нажмите «Подключить автозапись» → «Скачать Tiyin» и установите.\n"
-                "2. Там же нажмите «Подключить» и включите переключатель Tiyin.\n"
-                "Ключ вводить не нужно — пуши банков начнут записываться сами.")
+                "1. Установите бесплатный MacroDroid.\n"
+                "2. Нажмите «Получить макрос Tiyin», откройте файл → «Импорт».\n"
+                "3. Разрешите MacroDroid доступ к уведомлениям.\n"
+                "Ключ вводить не нужно — пуши банков будут записываться сами.")
+
+
+def manual_macro_text(key: str) -> str:
+    url = f"{BASE}/api/ingest/android/{key}"
+    return ("Макрос MacroDroid «Tiyin» (вручную, один раз)\n\n"
+            "1. Триггер → Уведомление → Получено уведомление → приложения ваших банков.\n"
+            f"2. Действие → HTTP-запрос: POST, URL:\n{url}\n"
+            '   Тело (JSON): {"title":"[not_title]","text":"[notification]"}\n'
+            "3. Сохраните и разрешите доступ к уведомлениям.\n\n"
+            "Ссылку никому не пересылайте. Новый ключ: /rotate.")
+
+
+async def send_android_macro(message: Message, user_id: int) -> None:
+    key = get_ingest_key(user_id)
+    if MACRO_TEMPLATE.exists():
+        data = MACRO_TEMPLATE.read_text(encoding="utf-8").replace("TIYIN_KEY", key)
+        await message.answer_document(
+            BufferedInputFile(data.encode("utf-8"), filename="Tiyin.macro"),
+            caption="Откройте файл → MacroDroid → «Импорт». Затем разрешите доступ к уведомлениям.",
+        )
+    else:
+        await message.answer(manual_macro_text(key))
 
 
 async def send_for_platform(message: Message, platform: str, name: str) -> None:
@@ -86,7 +117,7 @@ async def send_for_platform(message: Message, platform: str, name: str) -> None:
     if platform == "ios":
         await message.answer(f"{greet}\n\n{IOS_TEXT}", reply_markup=ios_kb())
     elif platform == "android":
-        await message.answer(f"{greet}\n\n{ANDROID_TEXT}", reply_markup=android_kb(message.chat.id))
+        await message.answer(f"{greet}\n\n{ANDROID_TEXT}", reply_markup=android_kb())
     else:
         await message.answer(f"{greet}\n\nКакой у вас телефон?", reply_markup=ask_kb())
 
@@ -117,3 +148,9 @@ async def pick_platform(cb: CallbackQuery) -> None:
     platform = cb.data.split(":", 1)[1]
     await cb.answer()
     await send_for_platform(cb.message, platform, cb.from_user.first_name)
+
+
+@router.callback_query(F.data == "setup:android")
+async def android_setup(cb: CallbackQuery) -> None:
+    await cb.answer()
+    await send_android_macro(cb.message, cb.from_user.id)

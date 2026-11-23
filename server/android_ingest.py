@@ -2,6 +2,7 @@
 Tiyin для Android: подключение без ручного ввода и приём пушей.
 
   POST /api/android/claim   {"token": "..."}  -> {"ok": true, "key": "<ключ автозаписи>"}
+  POST /api/ingest/android/<ключ>   (для MacroDroid: ключ в адресе, заголовки не нужны)
   POST /api/ingest/android  Authorization: Bearer <ключ>
                             {"app": "<пакет банка>", "title": "...", "text": "..."}
 
@@ -63,11 +64,13 @@ def setup_android_ingest(app: web.Application, *, user_by_key, get_key, save_pus
 
     async def ingest(request: web.Request) -> web.Response:
         auth = request.headers.get("Authorization", "")
-        key = auth[7:].strip() if auth.lower().startswith("bearer ") else ""
+        key = request.match_info.get("key") or (auth[7:].strip() if auth.lower().startswith("bearer ") else "")
         user_id = user_by_key(key) if key else None
         if not user_id:
             return web.json_response({"ok": False, "error": "unauthorized"}, status=401)
         data = await _json(request)
+        if not data:  # MacroDroid может прислать обычный текст
+            data = {"text": (await request.text())}
         text = "\n".join(s for s in (str(data.get(k, "")).strip() for k in ("title", "text")) if s)
         if not text:
             return web.json_response({"ok": False, "error": "empty"}, status=400)
@@ -76,3 +79,4 @@ def setup_android_ingest(app: web.Application, *, user_by_key, get_key, save_pus
 
     app.router.add_post("/api/android/claim", claim)
     app.router.add_post("/api/ingest/android", ingest)
+    app.router.add_post("/api/ingest/android/{key}", ingest)
