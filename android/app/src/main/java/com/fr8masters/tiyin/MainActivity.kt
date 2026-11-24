@@ -6,6 +6,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.webkit.CookieManager
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
+import androidx.activity.result.contract.ActivityResultContracts
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -18,6 +21,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var refresh: SwipeRefreshLayout
+    private var fileCallback: ValueCallback<Array<Uri>>? = null
+
+    // Выбор чека/скриншота для вкладки AI (<input type="file">)
+    private val pickFile = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
+        fileCallback?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(r.resultCode, r.data))
+        fileCallback = null
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +67,24 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPageFinished(view: WebView, url: String?) {
                 refresh.isRefreshing = false
+            }
+        }
+
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onShowFileChooser(
+                view: WebView,
+                callback: ValueCallback<Array<Uri>>,
+                params: FileChooserParams
+            ): Boolean {
+                fileCallback?.onReceiveValue(null)
+                fileCallback = callback
+                return try {
+                    pickFile.launch(params.createIntent())
+                    true
+                } catch (_: Exception) {
+                    fileCallback = null
+                    false
+                }
             }
         }
 

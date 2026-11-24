@@ -19,3 +19,9 @@
 ## 2026-11-24 — бот предлагает APK вместо MacroDroid
 `2026-11-24-android-apk-in-bot.py`, копия до изменения: `/opt/tiyin/backup-login-20261124-202617/bot.py.before-p3`.
 - Android: кнопки «Скачать Tiyin для Android» (Releases/latest) и «Получить код для входа»; /setup на Android — инструкция по APK.
+
+## 2026-11-24 — чеки и скриншоты во вкладке AI
+`2026-11-24-receipts-patch.py`, резервная копия: `/opt/tiyin/backup-receipt-20261124-205650`.
+- Сервер: `POST /api/receipt {image, mime}` → черновики операций (Gemini через `vision.extract`, без сохранения); `POST /api/receipt/save {items}` → запись через `service.add_tx` (source=photo, проверка дублей, уведомление в бот).
+- Мини-приложение, вкладка AI: «📎 Загрузить чек или скриншот», сжатие до 1280px, список с правкой (расход/доход, сумма, где, категория), «Записать».
+- APK: выбор файла в WebView (onShowFileChooser).
