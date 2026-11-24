@@ -25,9 +25,7 @@ class SettingsActivity : AppCompatActivity() {
                 Uri.fromParts("package", packageName, null)))
         }
         findViewById<Button>(R.id.btn_bot).setOnClickListener {
-            try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/${Store.BOT}?start=android")))
-            } catch (_: Exception) {}
+            startActivity(Intent(this, LoginActivity::class.java))
         }
         findViewById<SwitchCompat>(R.id.sw_enabled).apply {
             isChecked = Store.enabled(this@SettingsActivity)

@@ -33,10 +33,10 @@ class TiyinNotificationListener : NotificationListenerService() {
         }
 
         val body = JSONObject()
+            .put("source", "push")
             .put("app", sbn.packageName)
-            .put("title", title)
-            .put("text", text)
-        Net.async { Net.post("/api/ingest/android", body, key) }
+            .put("push", JSONObject().put("title", title).put("body", text))
+        Net.async { Net.post("/api/ingest", body, key) }
     }
 
     companion object {

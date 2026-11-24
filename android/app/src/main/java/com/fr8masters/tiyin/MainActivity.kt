@@ -75,8 +75,33 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState)
         } else {
-            webView.loadUrl(START_URL)
+            val key = Store.key(this)
+            if (key == null) {
+                startActivity(Intent(this, LoginActivity::class.java)); finish(); return
+            }
+            webView.loadUrl("$START_URL/#app_token=" + Uri.encode(key))
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
+        menu.add(0, 1, 0, R.string.settings_menu)
+        menu.add(0, 2, 1, R.string.logout)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        when (item.itemId) {
+            1 -> startActivity(Intent(this, SettingsActivity::class.java))
+            2 -> {
+                Store.logout(this)
+                CookieManager.getInstance().removeAllCookies(null)
+                webView.clearCache(true)
+                webView.evaluateJavascript("try{localStorage.removeItem('tiyin_app_token')}catch(e){}", null)
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+        }
+        return true
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

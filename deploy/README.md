@@ -8,3 +8,10 @@
 - iOS: без изменений (шорткаты).
 
 Откат: `cp -a /opt/tiyin/backup-20261123-223356/* /opt/tiyin/tiyin-bot/ && systemctl restart tiyin`
+
+## 2026-11-24 — вход в приложение по коду
+`2026-11-24-app-login-patch.py`, резервная копия: `/opt/tiyin/backup-login-20261124-202617`.
+- Бот: `/login` выдаёт одноразовый 6-значный код (10 минут, таблица `app_codes`).
+- Сервер: `POST /api/app/login {"code"}` → `{"token"}`; API мини-приложения принимает `Authorization: Bearer <token>`.
+- Мини-приложение: берёт ключ из `#app_token=…`, хранит в localStorage.
+- APK: экран входа по коду, мини-приложение в WebView, автозапись пушей на `/api/ingest` с этим ключом.

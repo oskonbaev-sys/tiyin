@@ -5,4 +5,10 @@
         <item name="colorPrimary">@color/tiyin_green</item>
         <item name="colorAccent">@color/tiyin_gold</item>
     </style>
+    <style name="Theme.Tiyin.Bar" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="android:statusBarColor">@color/tiyin_green</item>
+        <item name="colorPrimary">@color/tiyin_green</item>
+        <item name="colorPrimaryDark">@color/tiyin_green</item>
+        <item name="colorAccent">@color/tiyin_gold</item>
+    </style>
 </resources>

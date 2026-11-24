@@ -15,6 +15,7 @@ object Store {
     private fun p(c: Context) = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
     fun key(c: Context): String? = p(c).getString("ingest_key", null)
     fun setKey(c: Context, k: String) = p(c).edit().putString("ingest_key", k).apply()
+    fun logout(c: Context) = p(c).edit().remove("ingest_key").apply()
     fun enabled(c: Context) = p(c).getBoolean("enabled", true)
     fun setEnabled(c: Context, v: Boolean) = p(c).edit().putBoolean("enabled", v).apply()
 
