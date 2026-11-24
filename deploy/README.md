@@ -15,3 +15,7 @@
 - Сервер: `POST /api/app/login {"code"}` → `{"token"}`; API мини-приложения принимает `Authorization: Bearer <token>`.
 - Мини-приложение: берёт ключ из `#app_token=…`, хранит в localStorage.
 - APK: экран входа по коду, мини-приложение в WebView, автозапись пушей на `/api/ingest` с этим ключом.
+
+## 2026-11-24 — бот предлагает APK вместо MacroDroid
+`2026-11-24-android-apk-in-bot.py`, копия до изменения: `/opt/tiyin/backup-login-20261124-202617/bot.py.before-p3`.
+- Android: кнопки «Скачать Tiyin для Android» (Releases/latest) и «Получить код для входа»; /setup на Android — инструкция по APK.
