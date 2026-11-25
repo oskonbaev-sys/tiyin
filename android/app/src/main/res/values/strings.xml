@@ -21,4 +21,9 @@
     <string name="settings_menu">Автозапись</string>
     <string name="listener_label">Tiyin — автозапись трат</string>
     <string name="auto_macrodroid">Автозапись пушей (MacroDroid)</string>
+    <string name="privacy">Политика конфиденциальности</string>
+    <string name="disclosure_title">Доступ к уведомлениям</string>
+    <string name="disclosure_text">Tiyin читает уведомления банков и платёжных приложений, чтобы автоматически записывать ваши траты и доходы.\n\nНа сервер Tiyin отправляются только уведомления, в которых есть сумма (сом, KGS и т. п.): название приложения, заголовок и текст. Сообщения из мессенджеров и почты не читаются. Данные используются только для вашего учёта расходов и не передаются третьим лицам.\n\nДоступ можно выключить в любой момент в настройках телефона.</string>
+    <string name="disclosure_ok">Разрешить</string>
+    <string name="disclosure_no">Не сейчас</string>
 </resources>

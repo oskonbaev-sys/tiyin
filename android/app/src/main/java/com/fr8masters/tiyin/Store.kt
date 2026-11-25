@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 object Store {
     const val BASE = "https://tiyin.fr8mastersllc.com"
@@ -21,6 +23,17 @@ object Store {
 
     fun hasAccess(c: Context) =
         NotificationManagerCompat.getEnabledListenerPackages(c).contains(c.packageName)
+
+    const val PRIVACY_URL = "https://tiyin.fr8mastersllc.com/privacy"
+
+    /** Android 15+ рисует под системными панелями: даём корневому виду отступы. */
+    fun fitSystemBars(v: android.view.View) {
+        ViewCompat.setOnApplyWindowInsetsListener(v) { view, insets ->
+            val b = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
+            view.setPadding(b.left, b.top, b.right, b.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+    }
 
     /** Открывает сразу переключатель Tiyin (Android 11+), иначе общий список. */
     fun openAccess(c: Context) {

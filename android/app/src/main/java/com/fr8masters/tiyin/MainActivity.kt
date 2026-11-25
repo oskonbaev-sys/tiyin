@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.toolbar))
+        Store.fitSystemBars(findViewById(R.id.root))
 
         webView = findViewById(R.id.webview)
         refresh = findViewById(R.id.refresh)
@@ -114,13 +116,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
         if (BuildConfig.AUTO_RECORD) menu.add(0, 1, 0, R.string.settings_menu)
         else menu.add(0, 3, 0, R.string.auto_macrodroid)
-        menu.add(0, 2, 1, R.string.logout)
+        menu.add(0, 4, 1, R.string.privacy)
+        menu.add(0, 2, 2, R.string.logout)
         return true
     }
 
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         when (item.itemId) {
             1 -> startActivity(Intent(this, SettingsActivity::class.java))
+            4 -> try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Store.PRIVACY_URL)))
+            } catch (_: Exception) {}
             3 -> try {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/${Store.BOT}?start=macro")))
             } catch (_: Exception) {}

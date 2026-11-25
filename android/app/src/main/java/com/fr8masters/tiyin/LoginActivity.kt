@@ -18,6 +18,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if (Store.key(this) != null) { openApp(); return }
         setContentView(R.layout.activity_login)
+        Store.fitSystemBars(findViewById(R.id.login_root))
 
         val code = findViewById<EditText>(R.id.code)
         val btn = findViewById<Button>(R.id.btn_login)

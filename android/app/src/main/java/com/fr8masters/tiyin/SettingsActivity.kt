@@ -17,9 +17,10 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        Store.fitSystemBars(findViewById(R.id.settings_root))
         title = getString(R.string.settings_title)
 
-        findViewById<Button>(R.id.btn_access).setOnClickListener { Store.openAccess(this) }
+        findViewById<Button>(R.id.btn_access).setOnClickListener { showDisclosure() }
         findViewById<Button>(R.id.btn_restricted).setOnClickListener {
             startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null)))
@@ -31,6 +32,21 @@ class SettingsActivity : AppCompatActivity() {
             isChecked = Store.enabled(this@SettingsActivity)
             setOnCheckedChangeListener { _, v -> Store.setEnabled(this@SettingsActivity, v) }
         }
+    }
+
+    /** Объяснение перед запросом доступа к уведомлениям (требование Google Play). */
+    private fun showDisclosure() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.disclosure_title)
+            .setMessage(R.string.disclosure_text)
+            .setPositiveButton(R.string.disclosure_ok) { _, _ -> Store.openAccess(this) }
+            .setNegativeButton(R.string.disclosure_no, null)
+            .setNeutralButton(R.string.privacy) { _, _ ->
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Store.PRIVACY_URL)))
+                } catch (_: Exception) {}
+            }
+            .show()
     }
 
     override fun onResume() {

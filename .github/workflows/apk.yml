@@ -20,9 +20,21 @@ jobs:
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.7"
+          gradle-version: "8.11.1"
       - name: Build APK
         run: gradle assembleLiteDebug assembleFullDebug --no-daemon --stacktrace
+      - name: Build Google Play bundle (AAB)
+        env:
+          KS_B64: ${{ secrets.TIYIN_KEYSTORE_B64 }}
+          TIYIN_KEYSTORE_PASSWORD: ${{ secrets.TIYIN_KEYSTORE_PASSWORD }}
+          TIYIN_KEY_PASSWORD: ${{ secrets.TIYIN_KEYSTORE_PASSWORD }}
+          TIYIN_KEY_ALIAS: ${{ secrets.TIYIN_KEY_ALIAS }}
+        run: |
+          if [ -z "$KS_B64" ]; then echo "Нет секрета TIYIN_KEYSTORE_B64 — AAB пропущен"; exit 0; fi
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          TIYIN_KEYSTORE="$RUNNER_TEMP/upload.jks" gradle bundleFullRelease --no-daemon --stacktrace
+          cp app/build/outputs/bundle/fullRelease/app-full-release.aab ../Tiyin-play.aab
+          rm -f "$RUNNER_TEMP/upload.jks"
       - name: Publish release "latest"
         env:
           GH_TOKEN: ${{ github.token }}
@@ -31,4 +43,5 @@ jobs:
           cp app/build/outputs/apk/full/debug/app-full-debug.apk ../Tiyin-full.apk
           cd ..
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest Tiyin.apk Tiyin-full.apk --title "Tiyin для Android" --notes "Tiyin.apk — облегчённая (без доступа к уведомлениям). Tiyin-full.apk — с автозаписью пушей. Сборка из ${GITHUB_SHA::7}"
+          FILES="Tiyin.apk Tiyin-full.apk"; [ -f Tiyin-play.aab ] && FILES="$FILES Tiyin-play.aab"
+          gh release create latest $FILES --title "Tiyin для Android" --notes "Tiyin.apk — облегчённая (без доступа к уведомлениям). Tiyin-full.apk — с автозаписью пушей. Сборка из ${GITHUB_SHA::7}"
