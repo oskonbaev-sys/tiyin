@@ -15,6 +15,23 @@ android {
         versionName = "1.0"
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+    // lite — без доступа к уведомлениям (Play Protect не блокирует установку), full — с автозаписью пушей
+    flavorDimensions += "edition"
+    productFlavors {
+        create("lite") {
+            dimension = "edition"
+            buildConfigField("boolean", "AUTO_RECORD", "false")
+        }
+        create("full") {
+            dimension = "edition"
+            buildConfigField("boolean", "AUTO_RECORD", "true")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false

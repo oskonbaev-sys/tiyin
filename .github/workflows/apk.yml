@@ -22,12 +22,13 @@ jobs:
         with:
           gradle-version: "8.7"
       - name: Build APK
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: gradle assembleLiteDebug assembleFullDebug --no-daemon --stacktrace
       - name: Publish release "latest"
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp app/build/outputs/apk/debug/app-debug.apk ../Tiyin.apk
+          cp app/build/outputs/apk/lite/debug/app-lite-debug.apk ../Tiyin.apk
+          cp app/build/outputs/apk/full/debug/app-full-debug.apk ../Tiyin-full.apk
           cd ..
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest Tiyin.apk --title "Tiyin для Android" --notes "Сборка из ${GITHUB_SHA::7}"
+          gh release create latest Tiyin.apk Tiyin-full.apk --title "Tiyin для Android" --notes "Tiyin.apk — облегчённая (без доступа к уведомлениям). Tiyin-full.apk — с автозаписью пушей. Сборка из ${GITHUB_SHA::7}"
