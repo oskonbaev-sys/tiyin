@@ -32,3 +32,7 @@
 - Сервер: `POST /api/tx` принимает `currency`; доллары пересчитываются в сомы по курсу НБКР (`fx.py`), исходная сумма — в `orig_amount_minor/orig_currency`. Нет курса → ошибка 503, запись не создаётся.
 
 Откат: `cp -a /opt/tiyin/backup-cur-20261126-190119/server.py tiyin/ && cp -a /opt/tiyin/backup-cur-20261126-190119/index.html webapp/ && systemctl restart tiyin`
+
+## 2026-11-27 — Claude Haiku как запасной вариант распознавания чеков
+- `tiyin/vision.py`: запрос к Anthropic теперь берёт `ANTHROPIC_API_KEY` (раньше по ошибке шёл ключ Gemini). Копия до правки: `/opt/tiyin/vision.py.bak-haiku-*`.
+- В `.env` добавлен `ANTHROPIC_API_KEY` (вставлял владелец). Порядок: Gemini → при ошибке Haiku (`claude-haiku-5-5`, меняется через `VISION_MODEL`).
