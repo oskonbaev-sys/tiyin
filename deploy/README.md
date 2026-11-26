@@ -25,3 +25,10 @@
 - Сервер: `POST /api/receipt {image, mime}` → черновики операций (Gemini через `vision.extract`, без сохранения); `POST /api/receipt/save {items}` → запись через `service.add_tx` (source=photo, проверка дублей, уведомление в бот).
 - Мини-приложение, вкладка AI: «📎 Загрузить чек или скриншот», сжатие до 1280px, список с правкой (расход/доход, сумма, где, категория), «Записать».
 - APK: выбор файла в WebView (onShowFileChooser).
+
+## 2026-11-27 — валюта при вводе дохода (сом / $)
+`2026-11-27-income-currency-patch.py`, резервная копия: `/opt/tiyin/backup-cur-20261126-190119` (время сервера UTC).
+- Мини-приложение: в окне «Доход» переключатель «с | $»; сумма в $ показывается как «$500».
+- Сервер: `POST /api/tx` принимает `currency`; доллары пересчитываются в сомы по курсу НБКР (`fx.py`), исходная сумма — в `orig_amount_minor/orig_currency`. Нет курса → ошибка 503, запись не создаётся.
+
+Откат: `cp -a /opt/tiyin/backup-cur-20261126-190119/server.py tiyin/ && cp -a /opt/tiyin/backup-cur-20261126-190119/index.html webapp/ && systemctl restart tiyin`
