@@ -36,3 +36,10 @@
 ## 2026-11-27 — Claude Haiku как запасной вариант распознавания чеков
 - `tiyin/vision.py`: запрос к Anthropic теперь берёт `ANTHROPIC_API_KEY` (раньше по ошибке шёл ключ Gemini). Копия до правки: `/opt/tiyin/vision.py.bak-haiku-*`.
 - В `.env` добавлен `ANTHROPIC_API_KEY` (вставлял владелец). Порядок: Gemini → при ошибке Haiku (`claude-haiku-5-5`, меняется через `VISION_MODEL`).
+
+## 2026-11-27 — категории доходов в боте
+`2026-11-27-income-categories-patch.py`, резервная копия: `/opt/tiyin/backup-inccat-20261126-194744`.
+- «✏️ Категория» у дохода показывает категории доходов (CatCb.idx ≥ 1000 → INCOME_CATEGORIES). Для доходов обучение по магазину не включается.
+- Чеки/скриншоты: в распознавание передаются и категории доходов; доход получает категорию из INCOME_CATEGORIES.
+
+Откат: `cp -a /opt/tiyin/backup-inccat-20261126-194744/*.py tiyin/ && systemctl restart tiyin`
